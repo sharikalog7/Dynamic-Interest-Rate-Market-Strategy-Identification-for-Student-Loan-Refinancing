@@ -8,10 +8,14 @@ st.set_page_config(page_title="Student Loan Navigator", layout="wide", page_icon
 
 # Helper to download figures
 def fig_to_download_link(fig, filename="chart.png"):
-    buf = BytesIO()
-    fig.write_image(buf, format="png", width=800, height=500, scale=2)
-    b64 = base64.b64encode(buf.getvalue()).decode()
-    return f"[Download Chart as PNG](data:image/png;base64,{b64})"
+    try:
+        buf = BytesIO()
+        fig.write_image(buf, format="png", width=800, height=500, scale=2)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        return f"[Download Chart as PNG](data:image/png;base64,{b64})"
+    except Exception as e:
+        st.warning("Unable to generate PNG download link (Kaleido may not be supported in this environment).")
+        return ""
 
 # --- Loan Calculator Tab ---
 tab1, tab2 = st.tabs(["💸 Loan Calculator", "🔄 Refinance Comparison"])
