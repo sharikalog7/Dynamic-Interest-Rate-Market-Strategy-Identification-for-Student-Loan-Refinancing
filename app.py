@@ -143,7 +143,19 @@ with tab2:
 
     # Savings Timeline
     st.subheader("💰 Cumulative Savings Over Time")
-    base = list(all_schedules.values())[0]
+    if len(all_schedules) < 2:
+        st.warning("Please fill out at least two refinance scenarios to compare savings.")
+    else:
+        base = list(all_schedules.values())[0]
+        st.subheader("💰 Cumulative Savings Over Time")
+        fig4 = go.Figure()
+        for name, df4 in list(all_schedules.items())[1:]:
+            savings = base["Total Paid"].values[:len(df4)] - df4["Total Paid"]
+            fig4.add_trace(go.Scatter(x=df4["Month"], y=savings, name=name))
+    fig4.update_layout(template="plotly_white", yaxis_title="Savings ($)")
+    st.plotly_chart(fig4, use_container_width=True)
+    st.markdown(fig_to_download_link(fig4), unsafe_allow_html=True)
+    
     fig4 = go.Figure()
     for name, df4 in list(all_schedules.items())[1:]:
         savings = base["Total Paid"].values[:len(df4)] - df4["Total Paid"]
